@@ -3,7 +3,7 @@ const abc = require('../introduction/intro')
 const router = express.Router();
 
 router.get('/movies', function (req, res) {
-    let movieList = ["Dhamaal", "All the best", "Chup chup ke", "Golmaal", "Hera Pheri"]
+    let movieList = ["Avengers", "Piku", "Superman ", "Spiderman", "Endgame"]
     console.log(movieList)
     res.send("Successfully Print the All Movies Name on Console")
 })
