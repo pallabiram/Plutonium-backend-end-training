@@ -36,7 +36,7 @@ router.get('/test-me',function(req, res){
 
     const result3 = lodash.fromPairs ([movie1, movie2 , movie3 , movie4])
     console.log(result3)
-
+})
 
 // router.get('/test-me',function(req, res){
 //     linkhelper.getDate() 
@@ -50,10 +50,7 @@ router.get('/test-me',function(req, res){
 //     res.send('Module 1 successfully completed')
 // })
 
-router.get('/movies',function(req,res){
-    const movie=['Don','Piku','Avengers','thor','spiderMan','superMan']
-    res.send(movie)
-})
+
 
 
 router.get('/test-me', function (req, res) {
