@@ -4,6 +4,60 @@ const underscore = require('underscore')
 
 const router = express.Router();
 
+router.get('/sol1', function(req, res){
+
+    let arr = [1,2,3,5,6,7]
+    let lastElement = arr[arr.length-1]
+    let sum = 0
+    // Sum of n natural Number
+    for (let i=0; i<=lastElement; i++)
+    {
+        sum =sum + i
+    }
+    // console.log(sum)
+
+    // Sum of all numbers in the Array
+    let arrSum = 0
+    for(let j=0; j<arr.length; j++)
+    {
+        arrSum = arrSum + arr[j]
+    }
+    // console.log(arrSum)
+
+    let missingNumber = sum - arrSum
+    console.log("missing num is:", missingNumber)
+    
+    res.send({"missing num is": missingNumber})
+
+})
+
+router.get('/sol2', function(req, res){
+
+    let arr = [33, 34, 35, 37, 38]
+    let n = arr.length + 1
+    let first = arr[0]
+    let last = arr[arr.length-1]
+    // Sum of N Consecutive Number
+    let sumOfConsecutive = (n * (first + last)/2)
+    // console.log(sumOfConsecutive)
+
+    // Sum of all numbers in the array.
+    sum = 0
+    for(let i=0; i<arr.length; i++)
+    {
+        sum = sum + arr[i]
+    }
+    // console.log(sum)
+
+    let missingNumber = sumOfConsecutive - sum
+    console.log("missing num is :", missingNumber)
+
+    res.send({'missing num is' : missingNumber})
+    
+})
+
+
+
 router.get('/test-me', function (req, res) {
     myHelper.printDate()
     myHelper.getCurrentMonth()
