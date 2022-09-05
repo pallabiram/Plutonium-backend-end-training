@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 
 const authorSchema = new mongoose.Schema({
-      fname: { type: String, require: true },
-      lname: { type: String, require: true },
-      title: { type: String, require: true, enum: ["Mr", "Mrs", "Miss"] },
+      fname: { type: String, required: true },
+      lname: { type: String, required: true },
+      title: { type: String, required: true, enum: ["Mr", "Mrs", "Miss"] },
 
-      email: { type: String, require: true },
-      password: { type: String, require: true }
+      email: { type: String, required: true },
+      password: { type: String, required: true }
 },
       { timestamps: true })
 
