@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/rohitsch1/project-blogging-Group37/issues"
   },
-  "homepage": "https://github.com/rohitsch1/project-blogging-Group37#readme"
+  "homepage": "https://github.com/rohitsch1/project-blogging-Group37#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "express": "^4.18.1",
+    "mongoose": "^6.5.4"
+  }
 }
