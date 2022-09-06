@@ -17,7 +17,7 @@ const createAuthor = async function (req, res) {
 
         if (!validation(data.fname)) return res.status(400).send({msg : " Full name is required  "})
         if (!validation(data.lname)) return res.status(400).send({msg : " last name is required  "})
-        if (!validation(data.lname)) return res.status(400).send({msg : " title name is required  "})
+        if (!validation(data.title)) return res.status(400).send({msg : " title name is required  "})
         if (!validation(data.email)) return res.status(400).send({msg : " email ID not given "})
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))){
             return res.send({msg : "invalid email "})
