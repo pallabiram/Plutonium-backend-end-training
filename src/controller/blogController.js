@@ -125,25 +125,47 @@ const updatedBlogs = async function (req, res) {
 const deleteByQuery = async function (req, res) {
     try {
         let data = req.query
-        let checkDocumentDel = await blogModel.find({...data})
-        if (checkDocumentDel.isDeleted == true) {
-            res.status(200).send({msg:checkDocumentDel,msg:"already deleted"})
-        }
-        else {
-            let findDocument = await blogModel.findOneAndUpdate({ ...data }, {
-                $set: {
-                    isDeleted: true
-                }
-            }, { new: true })
+        let checkDocumentDel = await blogModel.find({...data })
+        // console.log(checkDocumentDel)
+        let result =[]
+        for (let i =0 ; i< checkDocumentDel.length ; i++){
 
-            if (!findDocument) return res.status(404).send({ msg: "NO blogs are present " })
-            res.status(200).send({ status: true, msg: findDocument })
+          if (checkDocumentDel[i].isDeleted==true){
+            result.push(` ${i} blog is already deleted`)
+
+          }
+          else{
+            let ID=checkDocumentDel[i]._id
+            let delDoc= await blogModel.findOneAndUpdate({_id :ID}, {$set:{isDeleted:true}},{new:true})
+            result.push(delDoc)
+          }
+
         }
+        if (checkDocumentDel.length==0) return res.status(404).send({ msg: "NO blogs are present " })
+        return res.status(200).send({msg : result})
+
+
+        // if (checkDocumentDel.isDeleted == true) {
+        //     return res.status(200).send({ msg: "already deleted" })
+        // }
+        // else {
+        //     let findDocument = await blogModel.findOneAndUpdate({ ...data }, {
+        //         $set: {
+        //             isDeleted: true
+        //         }
+        //     }, { new: true })
+
+        //     if (!findDocument) return res.status(404).send({ msg: "NO blogs are present " })
+        //     return res.status(200).send({ status: true, msg: findDocument })
+        // }
     }
     catch (err) {
         res.status(500).send(err.message)
     }
 }
+
+
+
 
 
 module.exports.getBlogs = getBlogs
