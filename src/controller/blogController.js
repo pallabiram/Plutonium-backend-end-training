@@ -1,7 +1,5 @@
 const blogModel = require('../models/blogModel')
 const authorModel = require('../models/authorModel')
-const moment = require('moment')
-
 
 const validation = function (data) {
     if (data == undefined || data == null) {
@@ -41,8 +39,19 @@ let createBlogs = async function (req, res) {
 const getBlogs = async function (req, res) {
     try {
         let data = req.query
-        let allBlogs = await blogModel.find({ isDeleted: false, isPublished: true, ...data })
 
+        if (!data)  return res.status(400).send({msg : "query is not given "})
+        // if (validation(data.title)) return res.status(400).send("tittle is mandatory")
+        // if (validation(data.body)) return res.status(400).send("body is mandatory in body")
+        // if (validation(data.category)) return res.status(400).send("category is mandatory")
+        // if (validation(data.tags)) return res.status(400).send("tags is mandatory")
+        // if (validation(data.subcategory)) return res.status(400).send("subcategory is mandatory")
+
+        
+        
+
+        let allBlogs = await blogModel.find({ isDeleted: false, isPublished: true, ...data })
+        if (allBlogs.length == 0) return res.status(404).send({msg : "NO blogs are present "})
 
         res.status(200).send({ status: true, allBlogs })
 
@@ -79,6 +88,12 @@ const deleteBlogs = async function (req, res) {
 const updatedBlogs = async function (req, res) {
     try {
         let data = req.params.blogId
+
+        if (!data) return res.status(400).send({msg : "Blog ID is not given "})
+        let document = await blogModel.findById(data)
+        if (!document) return res.status(404).send({msg : "blogID is not found "})
+
+ 
         let updatedData = req.body
         if (updatedData.isDeleted == true) {
             return res.status(200).send("already deleted")
@@ -89,9 +104,12 @@ const updatedBlogs = async function (req, res) {
                     $set: {
                         title: updatedData.title,
                         body: updatedData.body,
+                        isPublished: true,
+                        publishedAt: Date.now()
+                    },
+                    $push: {
                         tags: updatedData.tags,
-                        subcategory: updatedData.subcategory,
-                        isPublished: true, publishedAt: Date.now()
+                        subcategory: updatedData.subcategory
                     }
                 },
                 { new: true })
