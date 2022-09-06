@@ -37,6 +37,7 @@ let createBlogs = async function (req, res) {
     }
 }
 
+
 const getBlogs= async function(req,res){
    try {
     let data=req.query
@@ -51,15 +52,33 @@ catch(err){
 }
 }
 
+const deleteBlogs=async function(req,res){
+    try{
+        let data=req.params.blogId
+        if(!data) return res.send("Blog Id is not given")
 
+        let blogId = await blogModel.findById(data)
+        if (!blogId) return res.status(404).send({ msg: "Blog id not found" })
+        if(blogId.isDeleted==true){
+        res.status(200).send({msg:"Blog is already deleted"})
+        }
+
+        else{
+            blogId.isDeleted=true
+            blogId.deletedAt=Date.now() 
+            res.status(200).send({msg:blogId})
+        }
+    }
+
+    catch(err){
+        res.status(500).send(err.message)
+    }
+
+    
+}
 
 module.exports.getBlogs=getBlogs
 
-
-
-
-
-
-
-
 module.exports.createBlogs = createBlogs
+
+module.exports.deleteBlogs=deleteBlogs
