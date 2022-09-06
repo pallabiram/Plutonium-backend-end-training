@@ -1,14 +1,24 @@
 const authorModel = require('../models/authorModel')
 
+const validation = function(data){
+    if(data==undefined || data == null ){
+        return false
+    }
+    if(typeof(data)== "string" && data.trim()==0) {
+        return false 
+    }
+    return true 
+}
 
+      
 const createAuthor = async function (req, res) {
     try {
         let data = req.body
 
-        if (!data.fname) return res.status(400).send({msg : " Full name is required  "})
-        if (!data.lname) return res.status(400).send({msg : " last name is required  "})
-        if (!data.title) return res.status(400).send({msg : " title name is required  "})
-        if (!data.email) return res.status(400).send({msg : " email ID not given "})
+        if (!validation(data.fname)) return res.status(400).send({msg : " Full name is required  "})
+        if (!validation(data.lname)) return res.status(400).send({msg : " last name is required  "})
+        if (!validation(data.lname)) return res.status(400).send({msg : " title name is required  "})
+        if (!validation(data.email)) return res.status(400).send({msg : " email ID not given "})
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))){
             return res.send({msg : "invalid email "})
         }
