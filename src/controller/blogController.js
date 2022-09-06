@@ -1,5 +1,6 @@
 const blogModel = require('../models/blogModel')
 const authorModel = require('../models/authorModel')
+const { findOneAndUpdate } = require('../models/authorModel')
 
 const validation = function (data) {
     if (data == undefined || data == null) {
@@ -40,18 +41,18 @@ const getBlogs = async function (req, res) {
     try {
         let data = req.query
 
-        if (!data)  return res.status(400).send({msg : "query is not given "})
+        if (!data) return res.status(400).send({ msg: "query is not given " })
         // if (validation(data.title)) return res.status(400).send("tittle is mandatory")
         // if (validation(data.body)) return res.status(400).send("body is mandatory in body")
         // if (validation(data.category)) return res.status(400).send("category is mandatory")
         // if (validation(data.tags)) return res.status(400).send("tags is mandatory")
         // if (validation(data.subcategory)) return res.status(400).send("subcategory is mandatory")
 
-        
-        
+
+
 
         let allBlogs = await blogModel.find({ isDeleted: false, isPublished: true, ...data })
-        if (allBlogs.length == 0) return res.status(404).send({msg : "NO blogs are present "})
+        if (allBlogs.length == 0) return res.status(404).send({ msg: "NO blogs are present " })
 
         res.status(200).send({ status: true, allBlogs })
 
@@ -89,11 +90,11 @@ const updatedBlogs = async function (req, res) {
     try {
         let data = req.params.blogId
 
-        if (!data) return res.status(400).send({msg : "Blog ID is not given "})
+        if (!data) return res.status(400).send({ msg: "Blog ID is not given " })
         let document = await blogModel.findById(data)
-        if (!document) return res.status(404).send({msg : "blogID is not found "})
+        if (!document) return res.status(404).send({ msg: "blogID is not found " })
 
- 
+
         let updatedData = req.body
         if (updatedData.isDeleted == true) {
             return res.status(200).send("already deleted")
@@ -121,6 +122,30 @@ const updatedBlogs = async function (req, res) {
     }
 }
 
+const deleteByQuery = async function (req, res) {
+    try {
+        let data = req.query
+        let checkDocumentDel = await blogModel.find({...data})
+        if (checkDocumentDel.isDeleted == true) {
+            res.status(200).send({msg:checkDocumentDel,msg:"already deleted"})
+        }
+        else {
+            let findDocument = await blogModel.findOneAndUpdate({ ...data }, {
+                $set: {
+                    isDeleted: true
+                }
+            }, { new: true })
+
+            if (!findDocument) return res.status(404).send({ msg: "NO blogs are present " })
+            res.status(200).send({ status: true, msg: findDocument })
+        }
+    }
+    catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+
 module.exports.getBlogs = getBlogs
 
 module.exports.createBlogs = createBlogs
@@ -128,3 +153,5 @@ module.exports.createBlogs = createBlogs
 module.exports.updatedBlogs = updatedBlogs
 
 module.exports.deleteBlogs = deleteBlogs
+
+module.exports.deleteByQuery = deleteByQuery
