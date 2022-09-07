@@ -57,15 +57,7 @@ const getBlogs = async function (req, res) {
         let data = req.query
 
         if (!data) return res.status(400).send({ msg: "query is not given " })
-        // if (validation(data.title)) return res.status(400).send("tittle is mandatory")
-        // if (validation(data.body)) return res.status(400).send("body is mandatory in body")
-        // if (validation(data.category)) return res.status(400).send("category is mandatory")
-        // if (validation(data.tags)) return res.status(400).send("tags is mandatory")
-        // if (validation(data.subcategory)) return res.status(400).send("subcategory is mandatory")
-
-
-
-
+       
         let allBlogs = await blogModel.find({ isDeleted: false, isPublished: true, ...data })
         if (allBlogs.length == 0) return res.status(404).send({ msg: "NO blogs are present " })
 
