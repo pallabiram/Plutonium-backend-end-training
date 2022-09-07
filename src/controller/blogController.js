@@ -100,11 +100,10 @@ const updatedBlogs = async function (req, res) {
         if (!objectID.isValid(data)) res.status(400).send(" objectID is not valid")
         let document = await blogModel.findById(data)
         if (!document) return res.status(404).send({ msg: "blogID is not found " })
-
-
+    
         let updatedData = req.body
-        if (updatedData.isDeleted == true) {
-            return res.status(200).send("already deleted")
+        if (document.isDeleted == true) {
+            return res.status(404).send({status: false ,msg:"already deleted"})
         }
         else {
             let saveData = await blogModel.findOneAndUpdate({ _id: data },
@@ -121,35 +120,29 @@ const updatedBlogs = async function (req, res) {
                     }
                 },
                 { new: true })
-            res.status(200).send({ msg: saveData })
+            return res.status(200).send({ status : true ,msg: saveData })
         }
     }
     catch (err) {
-        res.status(500).send({ err: err.message })
+        res.status(500).send({ status: true ,err: err.message })
     }
 }
 
 const deleteByQuery = async function (req, res) {
     try {
         let data = req.query
-        if (!objectID.isValid(data.authorId)) return res.status(400).send(" objectID is not valid")
+       // if (!objectID.isValid(data.authorId)) return res.status(400).send(" objectID is not valid")
         let checkDocumentDel = await blogModel.find({isDeleted:false },{...data })
     
         for (let i =0 ; i< checkDocumentDel.length ; i++){
-
-          if (checkDocumentDel[i].isDeleted==true){
-            result.push(` ${i} blog is already deleted`)
-
-          }
-          else{
+            
             let ID=checkDocumentDel[i]._id
             let delDoc= await blogModel.findOneAndUpdate({_id :ID}, {$set:{isDeleted:true}},{new:true})
             
-          }
 
         }
-        if (checkDocumentDel.length==0) return res.status(404).send({ msg: "NO blogs are present " })
-        return res.status(200).send({msg : "Every document is deleted Successfully"})
+        if (checkDocumentDel.length==0) return res.status(404).send({ status : false,  msg: "NO blogs are present " })
+        return res.status(200).send({status : true ,msg : "Every document is deleted Successfully"})
 
     }
     catch (err) {
