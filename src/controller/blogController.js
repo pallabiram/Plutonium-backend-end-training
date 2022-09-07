@@ -19,12 +19,13 @@ let createBlogs = async function (req, res) {
     try {
 
         let data = req.body
-        if (!validation(data.title)) res.status(400).send("tittle is mandatory")
-        if (!validation(data.body)) res.status(400).send("data is mandatory in body")
-        if (!validation(data.category)) res.status(400).send("category is mandatory")
+        if (!validation(data.title)) return res.status(400).send("tittle is mandatory")
+        if (!validation(data.body)) return res.status(400).send("data is mandatory in body")
+        if (!validation(data.category)) return res.status(400).send("category is mandatory")
+        if (!validation(data.authorId)) return res.status(400).send("authorId is mandatory")
 
         let Id = data.authorId
-        if (!objectID.isValid(Id)) res.status(400).send(" objectID is not valid")
+        if (!objectID.isValid(Id)) return res.status(400).send(" objectID is not valid")
         if (!Id) return res.status(400).send({ msg: "Author ID is not given" })
         let authorId = await authorModel.findById(Id)
         if (!authorId) return res.status(404).send({ msg: "author not found" })

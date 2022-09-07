@@ -23,7 +23,7 @@ const createAuthor = async function (req, res) {
             return res.send({msg : "invalid email "})
         }
         if (!data.password) return res.status(400).send({msg : " Password not given "})
-        if (!(/^[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(data.password))){
+        if (!(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(data.password))){
             return res.send({msg : "password invalid,password should contain atleast one number and one special character"})
         }
         let savedData = await authorModel.create(data)
