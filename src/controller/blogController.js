@@ -31,6 +31,8 @@ let createBlogs = async function (req, res) {
         if (!authorId) return res.status(404).send({ msg: "author not found" })
         if (data.isPublished == true) {
             data.publishedAt = Date.now()
+        }if (data.isDeleted == true) {
+            data.isDeleted = Date.now()
         }
         let saveData = await blogModel.create(data)
 
