@@ -23,3 +23,19 @@ If the blog document doesn't exist then return an HTTP status of 404 with a body
 DELETE /blogs?queryParams
 Delete blog documents by category, authorid, tag name, subcategory name, unpublished
 If the blog document doesn't exist then return an HTTP status of 404 with a body like this
+
+
+
+// if (checkDocumentDel.isDeleted == true) {
+        //     return res.status(200).send({ msg: "already deleted" })
+        // }
+        // else {
+        //     let findDocument = await blogModel.findOneAndUpdate({ ...data }, {
+        //         $set: {
+        //             isDeleted: true
+        //         }
+        //     }, { new: true })
+
+        //     if (!findDocument) return res.status(404).send({ msg: "NO blogs are present " })
+        //     return res.status(200).send({ status: true, msg: findDocument })
+        // }

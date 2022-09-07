@@ -1,6 +1,9 @@
 const blogModel = require('../models/blogModel')
 const authorModel = require('../models/authorModel')
 const { findOneAndUpdate } = require('../models/authorModel')
+const mongoose =require ('mongoose')
+ 
+const objectID= mongoose.Types.ObjectId
 
 const validation = function (data) {
     if (data == undefined || data == null) {
@@ -21,6 +24,7 @@ let createBlogs = async function (req, res) {
         if (!validation(data.category)) res.status(400).send("category is mandatory")
 
         let Id = data.authorId
+        if (!objectID.isValid(Id)) res.status(400).send(" objectID is not valid")
         if (!Id) return res.status(400).send({ msg: "Author ID is not given" })
         let authorId = await authorModel.findById(Id)
         if (!authorId) return res.status(404).send({ msg: "author not found" })
@@ -32,6 +36,7 @@ let createBlogs = async function (req, res) {
         return res.status(201).send({ msg: saveData })
     }
     catch (err) {
+        console.log(err.message)
         return res.status(500).send({ msg: err.message })
     }
 }
@@ -66,6 +71,7 @@ const deleteBlogs = async function (req, res) {
     try {
         let data = req.params.blogId
         if (!data) return res.send("Blog Id is not given")
+        if (!objectID.isValid(data)) res.status(400).send(" objectID is not valid")
 
         let blogId = await blogModel.findById(data)
         if (!blogId) return res.status(404).send({ msg: "Blog id not found" })
@@ -91,6 +97,7 @@ const updatedBlogs = async function (req, res) {
         let data = req.params.blogId
 
         if (!data) return res.status(400).send({ msg: "Blog ID is not given " })
+        if (!objectID.isValid(data)) res.status(400).send(" objectID is not valid")
         let document = await blogModel.findById(data)
         if (!document) return res.status(404).send({ msg: "blogID is not found " })
 
@@ -125,9 +132,9 @@ const updatedBlogs = async function (req, res) {
 const deleteByQuery = async function (req, res) {
     try {
         let data = req.query
-        let checkDocumentDel = await blogModel.find({...data })
-        // console.log(checkDocumentDel)
-        let result =[]
+        if (!objectID.isValid(data.authorId)) return res.status(400).send(" objectID is not valid")
+        let checkDocumentDel = await blogModel.find({isDeleted:false },{...data })
+    
         for (let i =0 ; i< checkDocumentDel.length ; i++){
 
           if (checkDocumentDel[i].isDeleted==true){
@@ -137,27 +144,13 @@ const deleteByQuery = async function (req, res) {
           else{
             let ID=checkDocumentDel[i]._id
             let delDoc= await blogModel.findOneAndUpdate({_id :ID}, {$set:{isDeleted:true}},{new:true})
-            result.push(delDoc)
+            
           }
 
         }
         if (checkDocumentDel.length==0) return res.status(404).send({ msg: "NO blogs are present " })
-        return res.status(200).send({msg : result})
+        return res.status(200).send({msg : "Every document is deleted Successfully"})
 
-
-        // if (checkDocumentDel.isDeleted == true) {
-        //     return res.status(200).send({ msg: "already deleted" })
-        // }
-        // else {
-        //     let findDocument = await blogModel.findOneAndUpdate({ ...data }, {
-        //         $set: {
-        //             isDeleted: true
-        //         }
-        //     }, { new: true })
-
-        //     if (!findDocument) return res.status(404).send({ msg: "NO blogs are present " })
-        //     return res.status(200).send({ status: true, msg: findDocument })
-        // }
     }
     catch (err) {
         res.status(500).send(err.message)
