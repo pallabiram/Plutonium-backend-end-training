@@ -5,6 +5,12 @@ const mongoose =require ('mongoose')
  
 const objectID= mongoose.Types.ObjectId
 
+const validBody = function(data)
+{
+    if (Object.keys(data)==0) return false
+    return true
+}
+
 const validation = function (data) {
     if (data == undefined || data == null) {
         return false
@@ -19,20 +25,21 @@ let createBlogs = async function (req, res) {
     try {
 
         let data = req.body
-        if (!validation(data.title)) return res.status(400).send("tittle is mandatory")
-        if (!validation(data.body)) return res.status(400).send("data is mandatory in body")
-        if (!validation(data.category)) return res.status(400).send("category is mandatory")
-        if (!validation(data.authorId)) return res.status(400).send("authorId is mandatory")
+        if (!validBody(data))  return res.status(400).send({msg :"body  is empty"})
+        if (!validation(data.title)) return res.status(400).send({msg :"tittle is mandatory"})
+        if (!validation(data.body)) return res.status(400).send({msg:"data is mandatory in body"})
+        if (!validation(data.category)) return res.status(400).send({msg :"category is mandatory"})
+        if (!validation(data.authorId)) return res.status(400).send({msg :"authorId is mandatory"})
 
         let Id = data.authorId
-        if (!objectID.isValid(Id)) return res.status(400).send(" objectID is not valid")
+        if (!objectID.isValid(Id)) return res.status(400).send({msg :" objectID is not valid"})
         if (!Id) return res.status(400).send({ msg: "Author ID is not given" })
         let authorId = await authorModel.findById(Id)
         if (!authorId) return res.status(404).send({ msg: "author not found" })
         if (data.isPublished == true) {
             data.publishedAt = Date.now()
         }if (data.isDeleted == true) {
-            data.isDeleted = Date.now()
+            data.deletedAt = Date.now()
         }
         let saveData = await blogModel.create(data)
 
@@ -105,6 +112,7 @@ const updatedBlogs = async function (req, res) {
         if (!document) return res.status(404).send({ msg: "blogID is not found " })
     
         let updatedData = req.body
+        if (!validBody(updatedData))  return res.status(400).send({msg :"body  is empty"})
         if (document.isDeleted == true) {
             return res.status(404).send({status: false ,msg:"already deleted"})
         }

@@ -10,11 +10,18 @@ const validation = function(data){
     return true 
 }
 
+const validBody = function(data)
+{
+    if (Object.keys(data)==0) return false
+    return true
+}
+
       
 const createAuthor = async function (req, res) {
     try {
         let data = req.body
 
+        if (!validBody(data))  return res.status(400).send({msg :"body  is empty"})
         if (!validation(data.fname)) return res.status(400).send({msg : " Full name is required  "})
         if (!validation(data.lname)) return res.status(400).send({msg : " last name is required  "})
         if (!validation(data.title)) return res.status(400).send({msg : " title name is required  "})
