@@ -1,6 +1,5 @@
 const authorModel = require('../models/authorModel')
 const jwt=require('jsonwebtoken')
-const { use } = require('../route/route')
 const validation = function(data){
     if(data==undefined || data == null ){
         return false
@@ -50,12 +49,12 @@ const login=async function(req,res){
     if (!validBody(req.body))  return res.status(400).send({msg :"body  is empty"})
     if (!validation(username)) return res.status(400).send({msg : " email ID not given "})
     if (!validation(password)) return res.status(400).send({msg : " password not given "})
-    let userData=await authorModel.find({email:username,password:password})
+    let userData=await authorModel.findOne({email:username,password:password})
     if(!userData){
        return res.status(404).send({status:true,msg:"incorrect credential"})
     }
     let token=jwt.sign({
-        userid:userData._id.toString(),
+        userid: userData._id.toString(),
         batch:"plutonium",
         project:"mini blogging site"
     },
