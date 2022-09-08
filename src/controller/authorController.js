@@ -10,6 +10,10 @@ const validation = function(data){
     return true 
 }
 
+const rtrim =function (str) {
+    return str.replace(/\s+$/g, '');
+  }
+
 const validBody = function(data)
 {
     if (Object.keys(data)==0) return false
@@ -25,21 +29,37 @@ const valid=  function (data){
 const createAuthor = async function (req, res) {
     try {
         let data = req.body
-        let { fname , lname , title } = data
+
+        let { fname , lname , title ,email ,password} = data
+
         if (!validBody(data))  return res.status(400).send({msg :"body  is empty"})
+
         if (!validation(fname)) return res.status(400).send({msg : " Full name is required  "})
+        if (!(/^[a-z ,.'-]+$/i.test(fname))) return res.status(400).send({status: false ,msg: "fname should be alphabetic character"})
         if (!validation(lname)) return res.status(400).send({msg : " last name is required  "})
-        if (!validation(data.title)) return res.status(400).send({msg : " title name is required  "})
-        if (!valid(data.title)) return res.status(400).send({msg : " title should be Mr, Miss , Mrs  "})
-        if (!validation(data.email)) return res.status(400).send({msg : " email ID not given "})
-        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))){
+        if (!(/^[a-z ,.'-]+$/i.test(lname))) return res.status(400).send({status: false ,msg: "lname should be alphabetic character"})
+    
+
+        if (!validation(title)) return res.status(400).send({msg : " title name is required  "})
+        if (!valid(title)) return res.status(400).send({msg : " title should be Mr, Miss , Mrs  "})
+
+        if (!validation(email)) return res.status(400).send({msg : " email ID not given "})
+        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))){
             return res.send({msg : "invalid email "})
         }
-        if (!data.password) return res.status(400).send({msg : " Password not given "})
-        if (!(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(data.password))){
+        if (!password) return res.status(400).send({msg : " Password not given "})
+        if (!(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password))){
             return res.send({msg : "password invalid,password should contain atleast one number and alphabet"})
         }
-        let savedData = await authorModel.create(data)
+
+        let document ={
+            fname :fname.trim(),
+            lname :lname.trim(),
+            title :title,
+            email :email.toLowerCase(),
+            password:password
+        }
+        let savedData = await authorModel.create(document)
         res.status(201).send({ msg: savedData })
     }
     catch (err) {

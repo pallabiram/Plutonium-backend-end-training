@@ -134,18 +134,19 @@ const updatedBlogs = async function (req, res) {
 const deleteByQuery = async function (req, res) {
     try {
         let data = req.query
-       // if (!objectID.isValid(data.authorId)) return res.status(400).send(" objectID is not valid")
+        if(!data.authorId) return res.status(400).send({status: false ,msg : "authorID is compulsory for running this query delete API"})
+        if (!objectID.isValid(data.authorId)) return res.status(400).send(" objectID is not valid")
         let checkDocumentDel = await blogModel.find({isDeleted:false },{...data })
-    
-        for (let i =0 ; i< checkDocumentDel.length ; i++){
+        let i;
+        for (i =0 ; i< checkDocumentDel.length ; i++){
             
             let ID=checkDocumentDel[i]._id
             let delDoc= await blogModel.findOneAndUpdate({_id :ID}, {$set:{isDeleted:true}},{new:true})
             
 
         }
-        if (checkDocumentDel.length==0) return res.status(404).send({ status : false,  msg: "NO blogs are present " })
-        return res.status(200).send({status : true ,msg : "Every document is deleted Successfully"})
+        if (checkDocumentDel.length==0) return res.status(404).send({ status : false,  msg: "NO blogs are present Or blog is already deleted " })
+        return res.status(200).send({status : true ,msg : `there are ${checkDocumentDel.length} blog and ${checkDocumentDel.length} blog is deleted Successfully`})
 
     }
     catch (err) {

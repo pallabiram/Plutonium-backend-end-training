@@ -1,9 +1,14 @@
 const jwt=require('jsonwebtoken')
+const authorModel = require('../models/authorModel')
 const blogModel = require('../models/blogModel')
+const mongoose =require('mongoose')
+const objectID= mongoose.Types.ObjectId
+
 
 
 const authentication= function(req,res,next){
-    let token= req.headers["X-API-KEY"]
+    try{
+     let token= req.headers["X-API-KEY"]
     if (!token) token = req.headers["x-api-key"]
 
     if (!token) return res.status(404).send({status:false , msg : "token is not found "})
@@ -13,12 +18,16 @@ const authentication= function(req,res,next){
     
     req.final= verify.userid
     next()
+    }catch(err){
+        return res.status(402).send({status: false , msg : "token is not valid "})
+    }
 }
 
 
 
 const authorisation= async function(req,res,next){
 
+    try{
     let blogId = req.params.blogId
     let validblog =  await blogModel.findById(blogId)
     if (!validblog) return res.status(404).send({status: true , msg :"No blog is present with this blogId"})
@@ -30,8 +39,38 @@ const authorisation= async function(req,res,next){
         return res.status(401).send({status: false , msg : "you are not authorise person "}) 
     }
     next()
+    }catch(err){
+        return res.status(402).send({status: false , msg : "token is not valid "})
+    }
    
 }
-module.exports.authentication=authentication
 
-module.exports.authorisation=authorisation
+const authorisationQuery= async function(req,res,next){
+
+    try{
+    let autID = req.query.authorId
+    
+    if(!autID) return res.status(400).send({status: false ,msg : "authorID is compulsory for running this query delete API"}) 
+    if (!objectID.isValid(autID)) return res.status(400).send({status: false ,msg : "objectID is not valid"})
+    console.log(autID)
+    let validblog =  await authorModel.findById(autID)
+    console.log(validblog)
+    if (!validblog) return res.status(404).send({status: true , msg :"No blog is present with this blogId"})
+
+    let decodedToken=req.final
+
+    if (autID != decodedToken){
+        return res.status(401).send({status: false , msg : "you are not authorise person "}) 
+    }
+    next()
+    }catch(err){
+        return res.status(401).send({status: false , msg : err.message}) 
+    }
+   
+}
+module.exports={
+    authorisationQuery,
+    authentication,
+    authorisation
+}
+
