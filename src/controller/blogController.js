@@ -106,7 +106,7 @@ const updatedBlogs = async function (req, res) {
         let updatedData = req.body
         if (!validBody(updatedData))  return res.status(400).send({msg :"body  is empty"})
         if (document.isDeleted == true) {
-            return res.status(404).send({status: false ,msg:"already deleted"})
+            return res.status(404).send({status: false ,msg:"this blog is already deleted you can't update"})
         }
         else {
             let saveData = await blogModel.findOneAndUpdate({ _id: data },

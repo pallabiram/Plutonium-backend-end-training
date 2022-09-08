@@ -55,7 +55,7 @@ const authorisationQuery= async function(req,res,next){
     console.log(autID)
     let validblog =  await authorModel.findById(autID)
     console.log(validblog)
-    if (!validblog) return res.status(404).send({status: true , msg :"No blog is present with this blogId"})
+    if (!validblog) return res.status(404).send({status: true , msg :"No blog is present with this authorId"})
 
     let decodedToken=req.final
 
