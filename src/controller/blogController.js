@@ -25,14 +25,14 @@ let createBlogs = async function (req, res) {
 
         let data = req.body
         let {title,body,category,authorId}=data
-        if (!validBody(data))  return res.status(404).send({msg :"body  is empty"})
-        if (!validation(title)) return res.status(404).send({msg :"tittle is mandatory"})
-        if (!validation(body)) return res.status(404).send({msg:"data is mandatory in body"})
-        if (!validation(category)) return res.status(404).send({msg :"category is mandatory"})
-        if (!validation(authorId)) return res.status(404).send({msg :"authorId is mandatory"})
+        if (!validBody(data))  return res.status(400).send({msg :"body  is empty"})
+        if (!validation(title)) return res.status(400).send({msg :"tittle is mandatory"})
+        if (!validation(body)) return res.status(400).send({msg:"data is mandatory in body"})
+        if (!validation(category)) return res.status(400).send({msg :"category is mandatory"})
+        if (!validation(authorId)) return res.status(400).send({msg :"authorId is mandatory"})
 
         
-        if (!objectID.isValid(authorId)) return res.status(400).send({msg :" objectID is not valid"})
+        if (!objectID.isValid(authorId)) return res.status(403).send({msg :" objectID is not valid"})
         if (!Id) return res.status(400).send({ msg: "Author ID is not given" })
         let auth = await authorModel.findById(Id)
         if (!auth) return res.status(404).send({ msg: "author not found" })
@@ -56,7 +56,7 @@ const getBlogs = async function (req, res) {
     try {
         let data = req.query
 
-        if (!data) return res.status(404).send({ msg: "query is not given " })
+        if (!data) return res.status(400).send({ msg: "query is not given " })
        
         let allBlogs = await blogModel.find({ isDeleted: false, isPublished: true, ...data })
         if (allBlogs.length == 0) return res.status(404).send({ msg: "NO blogs are present " })
@@ -135,8 +135,8 @@ const deleteByQuery = async function (req, res) {
     try {
         let data = req.query
         if(!data.authorId) return res.status(400).send({status: false ,msg : "authorID is compulsory for running this query delete API"})
-        if (!objectID.isValid(data.authorId)) return res.status(400).send(" objectID is not valid")
-        let checkDocumentDel = await blogModel.find({isDeleted:false },{...data })
+        if (!objectID.isValid(data.authorId)) return res.status(403).send(" objectID is not valid")
+        let checkDocumentDel = await blogModel.find({isDeleted:false },{isPublished:false},{...data })
         let i;
         for (i =0 ; i< checkDocumentDel.length ; i++){
             

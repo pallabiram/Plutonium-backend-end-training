@@ -44,11 +44,11 @@ const createAuthor = async function (req, res) {
 
         if (!validation(email)) return res.status(400).send({msg : " email ID not given "})
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))){
-            return res.send({msg : "invalid email "})
+            return res.status(400).send({msg : "invalid email "})
         }
         if (!password) return res.status(400).send({msg : " Password not given "})
         if (!(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password))){
-            return res.send({msg : "password invalid,password should contain atleast one number and alphabet"})
+            return res.status(400).send({msg : "password invalid,password should contain atleast one number and alphabet"})
         }
 
         let document ={
