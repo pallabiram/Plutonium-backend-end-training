@@ -1,6 +1,5 @@
 const blogModel = require('../models/blogModel')
 const authorModel = require('../models/authorModel')
-const { findOneAndUpdate } = require('../models/authorModel')
 const mongoose =require ('mongoose')
  
 const objectID= mongoose.Types.ObjectId
@@ -25,17 +24,18 @@ let createBlogs = async function (req, res) {
     try {
 
         let data = req.body
-        if (!validBody(data))  return res.status(400).send({msg :"body  is empty"})
-        if (!validation(data.title)) return res.status(400).send({msg :"tittle is mandatory"})
-        if (!validation(data.body)) return res.status(400).send({msg:"data is mandatory in body"})
-        if (!validation(data.category)) return res.status(400).send({msg :"category is mandatory"})
-        if (!validation(data.authorId)) return res.status(400).send({msg :"authorId is mandatory"})
+        let {title,body,category,authorId}=data
+        if (!validBody(data))  return res.status(404).send({msg :"body  is empty"})
+        if (!validation(title)) return res.status(404).send({msg :"tittle is mandatory"})
+        if (!validation(body)) return res.status(404).send({msg:"data is mandatory in body"})
+        if (!validation(category)) return res.status(404).send({msg :"category is mandatory"})
+        if (!validation(authorId)) return res.status(404).send({msg :"authorId is mandatory"})
 
-        let Id = data.authorId
-        if (!objectID.isValid(Id)) return res.status(400).send({msg :" objectID is not valid"})
+        
+        if (!objectID.isValid(authorId)) return res.status(400).send({msg :" objectID is not valid"})
         if (!Id) return res.status(400).send({ msg: "Author ID is not given" })
-        let authorId = await authorModel.findById(Id)
-        if (!authorId) return res.status(404).send({ msg: "author not found" })
+        let auth = await authorModel.findById(Id)
+        if (!auth) return res.status(404).send({ msg: "author not found" })
         if (data.isPublished == true) {
             data.publishedAt = Date.now()
         }if (data.isDeleted == true) {
@@ -56,7 +56,7 @@ const getBlogs = async function (req, res) {
     try {
         let data = req.query
 
-        if (!data) return res.status(400).send({ msg: "query is not given " })
+        if (!data) return res.status(404).send({ msg: "query is not given " })
        
         let allBlogs = await blogModel.find({ isDeleted: false, isPublished: true, ...data })
         if (allBlogs.length == 0) return res.status(404).send({ msg: "NO blogs are present " })
@@ -65,7 +65,7 @@ const getBlogs = async function (req, res) {
 
     }
     catch (err) {
-        res.status(404).send(err.message)
+        res.status(500).send(err.message)
     }
 }
 

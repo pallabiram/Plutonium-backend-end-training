@@ -3,8 +3,7 @@ const authorModel = require('../models/authorModel')
 const blogModel = require('../models/blogModel')
 const mongoose =require('mongoose')
 const objectID= mongoose.Types.ObjectId
-
-
+ 
 
 const authentication= function(req,res,next){
     try{
@@ -24,6 +23,7 @@ const authentication= function(req,res,next){
 }
 
 
+// Authorisation for all Update and delete API which has BlogID in params
 
 const authorisation= async function(req,res,next){
 
@@ -45,9 +45,14 @@ const authorisation= async function(req,res,next){
    
 }
 
-const authorisationQuery= async function(req,res,next){
+
+//authorisation for delete Query API
+
+const authorisationQuery= async function(req,res,next){    
 
     try{
+
+
     let autID = req.query.authorId
     
     if(!autID) return res.status(400).send({status: false ,msg : "authorID is compulsory for running this query delete API"}) 

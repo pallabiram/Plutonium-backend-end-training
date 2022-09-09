@@ -1,5 +1,6 @@
 const authorModel = require('../models/authorModel')
 const jwt=require('jsonwebtoken')
+
 const validation = function(data){
     if(data==undefined || data == null ){
         return false
@@ -10,9 +11,7 @@ const validation = function(data){
     return true 
 }
 
-const rtrim =function (str) {
-    return str.replace(/\s+$/g, '');
-  }
+
 
 const validBody = function(data)
 {
