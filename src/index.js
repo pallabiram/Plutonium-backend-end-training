@@ -6,7 +6,7 @@ const mongoose=require('mongoose')
 const app=express()
 
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended:true}))
+// app.use(bodyParser.urlencoded({extended:true}))
 
 mongoose.connect("mongodb+srv://Rohitsch:S*Crohit16@cluster0.31aen.mongodb.net/group37Database?retryWrites=true&w=majority", {
     useNewUrlParser: true
