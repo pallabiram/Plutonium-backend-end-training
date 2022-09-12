@@ -43,6 +43,8 @@ const createAuthor = async function (req, res) {
         if (!valid(title)) return res.status(400).send({msg : " title should be Mr, Miss , Mrs  "})
 
         if (!validation(email)) return res.status(400).send({msg : " email ID not given "})
+        let fullemail= await authorModel.findOne({email: email})
+        if(fullemail) return res.status(400).send({status: false ,msg: "email should be unique"})
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))){
             return res.status(400).send({msg : "invalid email "})
         }
