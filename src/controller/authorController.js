@@ -58,7 +58,7 @@ const createAuthor = async function (req, res) {
             email :email.toLowerCase(),
             password:password
         }
-        let savedData = await authorModel.create(data)
+        let savedData = await authorModel.create(document)
         res.status(201).send({ msg: savedData })
     }
     catch (err) {
