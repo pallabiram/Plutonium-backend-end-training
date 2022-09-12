@@ -12,7 +12,7 @@ router.get('/test-me',function(req,res){
 
 // creating author And Blogs 
 router.post("/authors",authorController.createAuthor)
-router.post('/blogs',blogController.createBlogs)
+router.post('/blogs',auth.authentication,blogController.createBlogs)
 
 // login API
 router.post('/login',authorController.login)
