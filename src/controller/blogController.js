@@ -33,8 +33,8 @@ let createBlogs = async function (req, res) {
 
         
         if (!objectID.isValid(authorId)) return res.status(403).send({msg :" objectID is not valid"})
-        if (!Id) return res.status(400).send({ msg: "Author ID is not given" })
-        let auth = await authorModel.findById(Id)
+        if (!authorId) return res.status(400).send({ msg: "Author ID is not given" })
+        let auth = await authorModel.findById(authorId)
         if (!auth) return res.status(404).send({ msg: "author not found" })
         if (data.isPublished == true) {
             data.publishedAt = Date.now()

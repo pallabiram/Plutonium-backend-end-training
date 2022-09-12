@@ -10,7 +10,7 @@ const authentication= function(req,res,next){
      let token= req.headers["X-API-KEY"]
     if (!token) token = req.headers["x-api-key"]
 
-    if (!token) return res.status(404).send({status:false , msg : "token is not found "})
+    if (!token) return res.status(400).send({status:false , msg : "token is not found "})
 
     let verify= jwt.verify(token , "group37 project")
     if (!verify) return res.status(402).send({status: false , msg : "token is not valid "})
@@ -18,7 +18,7 @@ const authentication= function(req,res,next){
     req.final= verify.userid
     next()
     }catch(err){
-        return res.status(402).send({status: false , msg : "token is not valid "})
+        return res.status(402).send({status: false , msg : err.message})
     }
 }
 
@@ -40,7 +40,7 @@ const authorisation= async function(req,res,next){
     }
     next()
     }catch(err){
-        return res.status(402).send({status: false , msg : "token is not valid "})
+        return res.status(402).send({status: false , msg : err.message})
     }
    
 }
