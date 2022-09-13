@@ -61,7 +61,8 @@ const getBlogs = async function (req, res) {
         let allBlogs = await blogModel.find({ isDeleted: false, isPublished: true, ...data })
         if (allBlogs.length == 0) return res.status(404).send({ msg: "NO blogs are present " })
 
-        res.status(200).send({ status: true, allBlogs })
+       return res.status(200).send({ status: true, allBlogs })
+
 
     }
     catch (err) {
